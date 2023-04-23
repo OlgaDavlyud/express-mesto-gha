@@ -9,10 +9,10 @@ const getUsers = (req, res, next) => {
 const getUser = (req, res) => {
   const { userId } = req.params;
 
-  User.findById(userId)
+  return User.findById(userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ error: 'Такого пользователя нет' });
+        res.status(404).send({ message: 'Такого пользователя нет' });
       } else {
         res.status(200).res.send(user);
       }
@@ -32,19 +32,53 @@ const createUser = (req, res) => {
   const user = User.create({ name, about, avatar });
 
   return res.status(200).send({
-    _id: user._id,
     name: user.name,
     about: user.about,
     avatar: user.avatar,
+    _id: user._id,
   });
 };
 
-const updateProfile = (req, res) => {
-  res.send(req);
+const updateProfile = (req, res, next) => {
+  const { name, about } = req.body;
+
+  User.findByIdAndUpdate(req.user._id, { name, about })
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Такого пользователя нет' });
+      }
+      res.status(200).res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'При запросе пользователя id передан некорректно' });
+      } else {
+        next(err);
+      }
+    });
 };
 
-const updateAvatar = (req, res) => {
-  res.send(req);
+const updateAvatar = (req, res, next) => {
+  const { avatar } = req.body;
+
+  User.findByIdAndUpdate(req.user._id, { avatar })
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Такого пользователя нет' });
+      }
+      res.status(200).res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'При запросе пользователя id передан некорректно' });
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {
