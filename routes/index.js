@@ -6,7 +6,7 @@ const cardsRoutes = require('./cards');
 router.use('/users', usersRoutes);
 router.use('/cards', cardsRoutes);
 
-router.use('*', (req, res) => {
+router.use((req, res) => {
   res.status(404).send({ error: 'Что-то пошло не так' });
 });
 

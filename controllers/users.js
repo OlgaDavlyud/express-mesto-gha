@@ -14,7 +14,7 @@ const getUser = (req, res) => {
       if (!user) {
         res.status(404).send({ message: 'Такого пользователя нет' });
       } else {
-        res.status(200).res.send(user);
+        res.status(200).send(user);
       }
     })
     .catch((err) => {
@@ -42,12 +42,12 @@ const createUser = (req, res) => {
 const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Такого пользователя нет' });
       }
-      res.status(200).res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -63,12 +63,12 @@ const updateProfile = (req, res, next) => {
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Такого пользователя нет' });
       }
-      res.status(200).res.send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

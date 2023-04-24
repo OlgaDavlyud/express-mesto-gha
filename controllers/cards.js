@@ -24,19 +24,23 @@ const createCard = (req, res, next) => {
     });
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
+  console.log(cardId);
 
-  Card.findByIdAndDelete(cardId)
-    .then((card) => card.delete())
+  Card.findById(cardId)
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Такой карточки нет' });
+      }
+      card.deleteOne();
+    })
+    .then(() => res.send({ message: 'Карточка удалена' }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Передан некорректный id карточки' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Такой карточки нет' });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
+      next(err);
     });
 };
 
