@@ -26,17 +26,28 @@ const getUser = (req, res) => {
     });
 };
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+const createUser = (req, res, next) => {
+  try {
+    const { name, about, avatar } = req.body;
 
-  const user = User.create({ name, about, avatar });
+    const user = User.create({ name, about, avatar });
 
-  return res.status(200).send({
-    name: user.name,
-    about: user.about,
-    avatar: user.avatar,
-    _id: user._id,
-  });
+    return res.status(200).send({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      _id: user._id,
+    });
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(400).send({ message: 'Переданы некорректные данные' });
+    } else if (err.status === 404) {
+      res.status(404).send({ message: err.message });
+    } else {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
+    }
+    return next(err);
+  }
 };
 
 const updateProfile = (req, res, next) => {
