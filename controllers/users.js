@@ -1,9 +1,11 @@
 const User = require('../models/user');
 
-const getUsers = (req, res, next) => {
+const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch(next);
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
 };
 
 const getUser = (req, res) => {
@@ -39,8 +41,6 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (err.status === 404) {
-        res.status(404).send({ message: err.message });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -61,8 +61,6 @@ const updateProfile = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'При запросе пользователя id передан некорректно' });
       } else {
         next(err);
       }
@@ -82,8 +80,6 @@ const updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'При запросе пользователя id передан некорректно' });
       } else {
         next(err);
       }
