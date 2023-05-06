@@ -100,10 +100,39 @@ const validateCard = celebrate({
   }),
 });
 
+const validateUserId = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string()
+      .length(24)
+      .hex()
+      .message('Обязательный формат id - hex')
+      .required()
+      .messages({
+        'string.length': 'Фиксированное количество символов id - 24',
+      }),
+  }),
+});
+
+const validateCardId = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string()
+      .length(24)
+      .hex()
+      .message('Обязательный формат id - hex')
+      .required()
+      .messages({
+        'string.length': 'Фиксированное количество символов id - 24',
+        'string.empty': 'Поле "link" обязательное для заполнения',
+      }),
+  }),
+});
+
 module.exports = {
   validateLogin,
   validateUser,
   validateUserProfile,
   validateUserAvatar,
   validateCard,
+  validateUserId,
+  validateCardId,
 };
