@@ -33,8 +33,9 @@ const getUser = (req, res, next) => {
     });
 };
 
-const createUser = (req, res, next) => {
+const createUser = async (req, res, next) => {
   try {
+    const hash = await bcrypt.hash(req.body.password, 10);
     const {
       name,
       about,
@@ -42,21 +43,20 @@ const createUser = (req, res, next) => {
       email,
     } = req.body;
 
-    bcrypt.hash(req.body.password, 10)
-      .then((hash) => User.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
-      }))
-      .then((user) => res.status(RES_OK).send({
-        _id: user._id,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        email: user.email,
-      }));
+    const user = await User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    });
+    return res.status(RES_OK).send({
+      _id: user._id,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    });
   } catch (err) {
     if (err.code === 11000) {
       throw new ConflictError('Пользователь с таким email уже существует');
@@ -64,7 +64,7 @@ const createUser = (req, res, next) => {
     if (err.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные'));
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -129,7 +129,6 @@ const login = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
-          sameSite: true,
         })
         .send({ message: 'Данные сохранены' });
     })
