@@ -34,37 +34,38 @@ const getUser = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  const {
-    name,
-    about,
-    avatar,
-    email,
-  } = req.body;
-
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
+  try {
+    const {
       name,
       about,
       avatar,
       email,
-      password: hash,
-    }))
-    .then((user) => res.status(RES_OK).send({
-      _id: user._id,
-      name: user.name,
-      about: user.about,
-      avatar: user.avatar,
-      email: user.email,
-    }))
-    .catch((err) => {
-      if (err.code === 11000) {
-        throw new ConflictError('Пользователь с таким email уже существует');
-      }
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные'));
-      }
-      next(err);
-    });
+    } = req.body;
+
+    bcrypt.hash(req.body.password, 10)
+      .then((hash) => User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      }))
+      .then((user) => res.status(RES_OK).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      }));
+  } catch (err) {
+    if (err.code === 11000) {
+      throw new ConflictError('Пользователь с таким email уже существует');
+    }
+    if (err.name === 'ValidationError') {
+      next(new BadRequestError('Переданы некорректные данные'));
+    }
+    next(err);
+  }
 };
 
 const updateProfile = (req, res, next) => {
@@ -115,7 +116,6 @@ const login = (req, res, next) => {
       userId = user._id;
       return bcrypt.compare(password, user.password);
     })
-    // eslint-disable-next-line consistent-return
     .then((matched) => {
       if (!matched) {
         return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
