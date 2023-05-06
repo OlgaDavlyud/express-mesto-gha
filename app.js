@@ -1,6 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+
+const { errors } = require('celebrate');
+const {
+  validateLogin,
+  validateUser,
+} = require('./validate/validateRequest');
+
 const routes = require('./routes/index');
 const {
   createUser,
@@ -17,11 +24,12 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validateLogin, login);
+app.post('/signup', validateUser, createUser);
 
 app.use(routes);
 
+app.use(errors());
 app.use(InternalServerError);
 
 app.listen(PORT, () => {
