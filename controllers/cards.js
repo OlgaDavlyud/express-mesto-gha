@@ -63,7 +63,8 @@ const likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан некорректный id карточки');
+        next(new BadRequestError('Передан некорректный id карточки'));
+        return;
       }
       next(err);
     });
@@ -83,7 +84,8 @@ const dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан некорректный id карточки');
+        next(new BadRequestError('Передан некорректный id карточки'));
+        return;
       }
       next(err);
     });
