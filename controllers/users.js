@@ -125,9 +125,9 @@ const login = (req, res, next) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      res
+      return res
         .cookie('jwt', token, {
-          maxAge: 3600000,
+          maxAge: 3600000 * 24 * 7,
           httpOnly: true,
           sameSite: true,
         })
