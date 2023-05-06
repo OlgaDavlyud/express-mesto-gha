@@ -59,7 +59,7 @@ const createUser = async (req, res, next) => {
     });
   } catch (err) {
     if (err.code === 11000) {
-      throw new ConflictError('Пользователь с таким email уже существует');
+      return next(new ConflictError('Пользователь с таким email уже существует'));
     }
     if (err.name === 'ValidationError') {
       next(new BadRequestError('Переданы некорректные данные'));
