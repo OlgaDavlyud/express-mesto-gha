@@ -55,16 +55,20 @@ const validateUser = celebrate({
 const validateUserProfile = celebrate({
   body: Joi.object().keys({
     name: Joi.string()
+      .required()
       .min(2)
       .max(30)
       .messages({
+        'string.empty': 'Поле "name" обязательное для заполнения',
         'string.min': 'Минимальное количество символов - 2',
         'string.max': 'Максимальное количество символов - 30',
       }),
     about: Joi.string()
+      .required()
       .min(2)
       .max(30)
       .messages({
+        'string.empty': 'Поле "about" обязательное для заполнения',
         'string.min': 'Минимальное количество символов - 2',
         'string.max': 'Максимальное количество символов - 30',
       }),
@@ -74,6 +78,10 @@ const validateUserProfile = celebrate({
 const validateUserAvatar = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string()
+      .required()
+      .messages({
+        'string.empty': 'Поле "avatar" обязательное для заполнения',
+      })
       .pattern(regex)
       .message('Введите корректный url-адрес'),
   }),

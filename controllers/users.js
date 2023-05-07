@@ -27,7 +27,8 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('При запросе пользователя id передан некорректно');
+        next(new BadRequestError('При запросе пользователя id передан некорректно'));
+        return;
       }
       next(err);
     });
@@ -62,7 +63,7 @@ const createUser = async (req, res, next) => {
       return next(new ConflictError('Пользователь с таким email уже существует'));
     }
     if (err.name === 'ValidationError') {
-      next(new BadRequestError('Переданы некорректные данные'));
+      return next(new BadRequestError('Переданы некорректные данные'));
     }
     return next(err);
   }
@@ -80,9 +81,12 @@ const updateProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else if (err.name === 'CastError') {
+        next(new BadRequestError('При запросе пользователя id передан некорректно'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -98,9 +102,12 @@ const updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else if (err.name === 'CastError') {
+        next(new BadRequestError('При запросе пользователя id передан некорректно'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 

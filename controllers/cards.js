@@ -20,7 +20,8 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(CREATED).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
+        return;
       }
       next(err);
     });
@@ -43,7 +44,8 @@ const deleteCard = (req, res, next) => {
     .then(() => res.send({ message: 'Карточка удалена' }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан некорректный id карточки');
+        next(new BadRequestError('Передан некорректный id карточки'));
+        return;
       }
       next(err);
     });
