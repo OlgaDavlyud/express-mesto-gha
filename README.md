@@ -1,5 +1,6 @@
 # Проект Mesto фронтенд + бэкенд
-Выполнена работа по Проектной работе №14
+
+Выполнены автотесты на каждом этапе реализации.
 
 ## Директории
 
@@ -14,5 +15,6 @@
 `npm run start` — запускает сервер
 `npm run dev` — запускает сервер с hot-reload
 
+**Проект**
 
-Ссылка на проект: [https://olgadavlyud.github.io/express-mesto-gha/]
+[Ссылка](https://olgadavlyud.github.io/express-mesto-gha/) на GitHub Pages
